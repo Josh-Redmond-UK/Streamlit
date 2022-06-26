@@ -1,7 +1,9 @@
 import streamlit as st
 import networkx as nx
 import pandas as pd
-from utitlies import *
+import streamlit.components.v1 as components
+from utilities import *
+from pyvis.network import Network
 import re
 
 abs_regex = re.compile('.*abstract.*', re.IGNORECASE)
@@ -11,23 +13,40 @@ desc_regex = re.compile('.*description.*', re.IGNORECASE)
 patterns = [abs_regex, summary_regex, desc_regex]
 
 attributes = ['name', 'id', 'class']
+global dois_frame 
 
+BG = nx.Graph()
 
-dois = ['10.5589/cjrsyearend34',
-        '10.2991/rsete.2013.114',
-        '10.1177/2053951720949566',
-        '10.1093/acprof:oso/9780190239480.001.0001',
-        '10.1016/S0959-8022(00)00004-7',
-        '10.1145/3384772.3385155',
-        '10.3390/rs13030439']
+dois = []
 
-
-dois_frame = pd.DataFrame(dois).T
+global draw_network
+draw_network = False
 
 
 st.title("Citation Network Builder", anchor=None)
 
+doi_control_container = st.sidebar.container()
+with doi_control_container:
 
+    uploaded_file =st.file_uploader("Upload DOIs")
+    if uploaded_file is not None:
+        dois_frame = parse_st_upload(uploaded_file)
+        dois_frame.columns=['DOI']  
+        dataframe_display = st.dataframe(dois_frame)
 
-dataframe_display = st.dataframe(dois_frame)
-#st.sidebar.[dataframe_display]
+    build_network = st.button("Create Citation Network")
+    if build_network:
+        with st.spinner(text="Building Network"):
+            BG = create_network(list(dois_frame['DOI']), 0)
+            st.success("Network Built!")
+                    
+            Graph_Display = Network(notebook=True, height="720px", width="100%")
+            #Graph_Display.barnes_hut()
+            Graph_Display.from_nx(BG)
+            Graph_Display.show("ex.html")
+            draw_network = True
+
+if draw_network:            
+    HtmlFile = open("ex.html", 'r', encoding='utf-8')
+    source_code = HtmlFile.read() 
+    components.html(source_code, height = 720)

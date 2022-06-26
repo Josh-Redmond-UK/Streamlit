@@ -7,6 +7,9 @@ from habanero import cn
 import requests
 from bs4 import BeautifulSoup
 import re
+from io import StringIO
+import pandas as pd
+import streamlit as st
 cr = Crossref()
 import networkx as nx
 
@@ -15,6 +18,7 @@ def start_negotiation(doi):
     result = cn.content_negotiation(ids = doi, format = "citeproc-json")
   except Exception as e:
     err = e
+    print(e)
     code = e.args[0][0:3]
     if code == "404":
       raise err
@@ -141,13 +145,15 @@ def create_network(dois, steps):
   nodes = []
   already_queried = []
   for doi in dois:
+    #st.write(f"querying {doi}")
     nodes.append(get_outgoing_citations(doi))
     already_queried.append(doi)
 
 
   bibliograph = nodes_to_graph(nodes)
-  print("Starting network size", len(list(bibliograph.nodes)))
+  #st.write(f"Starting network size {len(list(bibliograph.nodes))}")
   for s in range(steps):
+
     for node in list(bibliograph.nodes):
       if node in already_queried:
         continue
@@ -161,6 +167,13 @@ def create_network(dois, steps):
           if neigh not in list(bibliograph.nodes):
             bibliograph.add_node(neigh)
           bibliograph.add_edge(node, neigh)
-    print("Step", s, "completed.")
+    #st.write(f"Step {s} completed.")
     print("Network size", len(list(bibliograph.nodes)), "nodes")
   return bibliograph
+
+
+def parse_st_upload(upload):
+
+    # Can be used wherever a "file-like" object is accepted:
+    dataframe = pd.read_csv(upload)
+    return dataframe
