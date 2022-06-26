@@ -1,6 +1,6 @@
 pandas
 networkx
 habanero
-pyviz
+
 streamlit
 bs4
