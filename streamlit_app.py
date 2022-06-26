@@ -25,4 +25,9 @@ dois = ['10.5589/cjrsyearend34',
 dois_frame = pd.DataFrame(dois).T
 
 
-st.dataframe(dois_frame)
+st.title("Citation Network Builder", anchor=None)
+
+
+
+dataframe_display = st.dataframe(dois_frame)
+#st.sidebar.[dataframe_display]
