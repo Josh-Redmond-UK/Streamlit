@@ -214,7 +214,7 @@ def add_node_metadata(G):
 
   for n in G.nodes:
     G.nodes[n]['label'] = title_abs[n][0]
-    G.nodes[n]['title'] =generate_panel_html(title_abs[n][0], "TestAuthor", title_abs[n][1], n)
+    G.nodes[n]['title'] = generate_panel_html(title_abs[n][0], "TestAuthor", title_abs[n][1], n)
     
   return G
 
@@ -222,7 +222,7 @@ def generate_panel_html(title=None, authors=None, abstract=None, doi=None):
 
 
 
-  html_string = f'<p><strong>Title: {title}<br /></strong><strong>Authors: {authors}<br /></strong><strong>DOI: <a href="http://www.google.com">{doi}</a></strong></p> <p><strong>Abstract: {abstract}</strong></p>'
+  html_string = f'<p><strong>Title: {title}<br /></strong><strong>Authors: {authors}<br /></strong><strong>DOI: <a href="http://www.google.com">{doi}</a></strong></p>'
   return html_string
 
 def set_node_community(G, communities):

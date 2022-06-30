@@ -43,6 +43,9 @@ with doi_control_container:
                 st.success("Network Built!")
                         
                 Graph_Display = Network(notebook=True, height="720px", width="100%")
+                #draw_network = True
+                #Graph_Display.from_nx(BG)
+                #Graph_Display.show("ex.html")
                 #Graph_Display.barnes_hut()
                 st.write("Getting Metadata")
                 BG = set_node_sizes(BG)
@@ -50,6 +53,7 @@ with doi_control_container:
                 st.write("Detecting Commmunities")
                 communities = nx.algorithms.community.modularity_max.greedy_modularity_communities(BG)
                 BG = set_node_community(BG, communities)
+                #draw_network = False
                 Graph_Display.from_nx(BG)
                 Graph_Display.show("ex.html")
                 draw_network = True
