@@ -177,3 +177,59 @@ def parse_st_upload(upload):
     # Can be used wherever a "file-like" object is accepted:
     dataframe = pd.read_csv(upload)
     return dataframe
+
+def set_node_community(G, communities):
+    '''Add community to node attributes'''
+    for c, v_c in enumerate(communities):
+        for v in v_c:
+            # Add 1 to save 0 for external edges
+            G.nodes[v]['community'] = c + 1
+
+
+def get_network_communities(G):
+  communities = nx.algorithms.community.modularity_max.greedy_modularity_communities(G)
+  set_node_community(G, communities)
+  return G
+
+def set_node_sizes(G):
+  degrees = G.degree
+  nodes = list(G.nodes)
+
+  for n in nodes:
+    G.nodes[n]['size'] = degrees[n]
+
+  return G
+
+
+
+
+def add_node_metadata(G):
+  abs_regex = re.compile('.*abstract.*', re.IGNORECASE)
+  summary_regex = re.compile('.*summary.*', re.IGNORECASE)
+  desc_regex = re.compile('.*description.*', re.IGNORECASE)
+
+  patterns = [abs_regex, summary_regex, desc_regex]
+  attributes = ['name', 'id', 'class']
+  title_abs = get_titles_and_abstracts(list(G.nodes), patterns, attributes)
+
+  for n in G.nodes:
+    G[n]['label'] = title_abs[n][0]
+    G[n]['title'] =generate_panel_html(title_abs[n][0], "TestAuthor", title_abs[n][1], n)
+    
+  return G
+
+def generate_panel_html(title=None, authors=None, abstract=None, doi=None):
+
+
+
+  html_string = f'<p><strong>Title: {title}<br /></strong><strong>Authors: {authors}<br /></strong><strong>DOI: <a href="http://www.google.com">{doi}</a></strong></p> <p><strong>Abstract: {abstract}</strong></p>'
+  return html_string
+
+def set_node_community(G, communities):
+  '''Add community to node attributes'''
+  for c, v_c in enumerate(communities):
+      for v in v_c:
+          # Add 1 to save 0 for external edges
+          G.nodes[v]['group'] = c + 1
+
+  return G
