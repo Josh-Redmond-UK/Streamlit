@@ -213,8 +213,8 @@ def add_node_metadata(G):
   title_abs = get_titles_and_abstracts(list(G.nodes), patterns, attributes)
 
   for n in G.nodes:
-    G[n]['label'] = title_abs[n][0]
-    G[n]['title'] =generate_panel_html(title_abs[n][0], "TestAuthor", title_abs[n][1], n)
+    G.nodes[n]['label'] = title_abs[n][0]
+    G.nodes[n]['title'] =generate_panel_html(title_abs[n][0], "TestAuthor", title_abs[n][1], n)
     
   return G
 
